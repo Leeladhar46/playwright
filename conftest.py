@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright,Page,expect
 from pages.Homepage import homepage
 from pages.Loginpage import loginpage
 import pytest
+import json
 
 def page():
     with sync_playwright() as p :
@@ -17,7 +18,14 @@ def LoginTOAmazon(page):
     homepageobj.validateSignInExpander()
     homepageobj.ClickSIgnInBtn()
     loginpageobj = loginpage(page)
-    loginpageobj.enterUsername("trainingplaywright@gmail.com")
+    with open("testdata\crendentials.json") as data :
+        testdata = json.load(data)
+    loginpageobj.enterUsername(testdata["positiveCrendentials"]["username"])
     loginpageobj.ClickOnContinue()
-    loginpageobj.enterPassword("Welcome@04")
+    loginpageobj.enterPassword(testdata["positiveCrendentials"]["password"])
     loginpageobj.ClickOnSignIn()
+
+@pytest.fixture()
+def homepageobj(page):
+    homepageobj = homepage(page)
+    return homepageobj
